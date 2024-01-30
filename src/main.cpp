@@ -56,18 +56,6 @@ void SpinFlywheel() {
   }
 }
 
-void Furry() {
-    Tail.spin(forward);
-    wait(2, sec);
-    Tail.stop();
-}
-
-void NonFurry() {
-  Tail.spin(reverse);
-  wait(2, sec);
-  Tail.stop();
-}
-
 void WingsETC() {
   if (Controller1.ButtonR1.pressing()) {
     wingPistonA.set(0);
@@ -214,9 +202,6 @@ void usercontrol(void) {
 
     WingsETC();
     SpinFlywheel();
-
-    Controller1.ButtonA.pressed(Furry);
-    Controller1.ButtonB.pressed(NonFurry);
 
     thread(LoadingScreenTips).detach();
 
