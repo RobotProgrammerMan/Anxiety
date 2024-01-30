@@ -44,7 +44,7 @@ const char* sayings[] = {"Stop ordering Marinara, I beg of you...", "Commiting v
                         "Triballs give you points when scored.", "Elevation is worth points.", "This is a robot :)", "i really need to get a job...",
                         "They locked me in here :(", "MAKE WAY FOR THE DOZER!", "FIGHT THE PAIN! FIGHT THE CLOWNS!", "It's juuuuuust a little blood!",
                         "I found the source of the ticking! A pipebomb!", "Alright ramblers, let's get rambling!", "I NEED A MEDIC BAG!",
-                        "5 BULLETS LEFT!", "I don't like greek eggs and lamb."
+                        "5 BULLETS LEFT!", "I don't like greek eggs and lamb.", "Current Mood:", "I think [Redacted by Twitter]"
                         };
 
 // Driving Commands
@@ -123,7 +123,7 @@ void LoadingScreenTips() {
 
     srand(Brain.Timer.systemHighResolution());
 
-    meth = rand() % 49;
+    meth = rand() % 51;
 
     Brain.Screen.print(sayings[meth]);
 
@@ -145,6 +145,22 @@ void LoadingScreenTips() {
       Brain.Screen.print("A rubber room! A rubber room with rats!");
       Brain.Screen.setCursor(4,1);
       Brain.Screen.print("And rats make me crazy! Crazy?");
+    } else if (meth == 49) {
+      Brain.Screen.setCursor(2, 1);
+      Brain.Screen.print("The phrase touched in the head");
+      Brain.Screen.setCursor(3, 1);
+      Brain.Screen.print("originally implied tocuhed by God");
+      Brain.Screen.setCursor(4, 1);
+      Brain.Screen.print("or the divine. Currently I feel");
+      Brain.Screen.setCursor(5, 1);
+      Brain.Screen.print("as if a full choir of angels hath");
+      Brain.Screen.setCursor(6, 1);
+      Brain.Screen.print("come down to take turns");
+      Brain.Screen.setCursor(7, 1);
+      Brain.Screen.print("booping my brain.");
+    } else if (meth == 50) {
+      Brain.Screen.setCursor(2, 1);
+      Brain.Screen.print("Reason: Expressing Opinion");
     }
 
     lsd = 1;
