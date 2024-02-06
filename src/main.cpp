@@ -18,8 +18,10 @@ controller Controller1 = controller(); // Controller
 motor TopLeft = motor(PORT1, ratio18_1, true); // Top Left Drive Motor
 motor BottomLeft = motor(PORT9, ratio6_1, true); // Bottom Left Drive Motor
 motor TopRight = motor(PORT2, ratio18_1, false); // Top Right Drive Motor
-motor BottomRight = motor(PORT10, ratio6_1, false); // Bottom Right Drive Motor
+motor BottomRight = motor(PORT8, ratio6_1, false); // Bottom Right Drive Motor
 motor SpinnySpin = motor(PORT5, ratio6_1, true); // Flywheel Motor
+motor ArmLeft = motor(PORT3, ratio6_1, false); // Left Arm Motor
+motor ArmRight = motor(PORT7, ratio6_1, false); // Right Arm Motor
 digital_out wingPistonA(Brain.ThreeWirePort.A); // Wing
 digital_out wingPistonB(Brain.ThreeWirePort.B); // Wing
 
@@ -56,7 +58,7 @@ void SpinFlywheel() {
 }
 
 void WingsETC() {
-  if (Controller1.ButtonR1.pressing()) {
+  if (Controller1.ButtonA.pressing()) {
     wingPistonA.set(0);
     wingPistonB.set(0);
   } else {
@@ -194,9 +196,16 @@ void usercontrol(void) {
 
     if(Controller1.ButtonL1.pressing()) {
       spin = true;
-    }
-    if(Controller1.ButtonL2.pressing()) {
+    } else if(Controller1.ButtonL2.pressing()) {
       spin = false;
+    }
+
+    if(Controller1.ButtonR1.pressing()) {
+      ArmLeft.spin(forward);
+      ArmRight.spin(forward);
+    } else if (Controller1.ButtonR2. pressing()) {
+      ArmLeft.spin(reverse);
+      ArmRight.spin(reverse);
     }
 
     WingsETC();
