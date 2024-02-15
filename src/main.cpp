@@ -17,20 +17,24 @@ brain Brain; // Brain
 controller Controller1 = controller(); // Controller
 motor TopLeft = motor(PORT1, ratio18_1, true); // Top Left Drive Motor
 motor BottomLeft = motor(PORT9, ratio6_1, true); // Bottom Left Drive Motor
+motor ExtraLeft = motor(PORT16, ratio18_1, true); // Extra Left Drive Motor
+motor ExtraRight = motor(PORT17, ratio18_1, false); // Extra Right Drive Motor
 motor TopRight = motor(PORT2, ratio18_1, false); // Top Right Drive Motor
 motor BottomRight = motor(PORT8, ratio6_1, false); // Bottom Right Drive Motor
-motor SpinnySpin = motor(PORT5, ratio6_1, true); // Flywheel Motor
-motor ArmLeft = motor(PORT3, ratio6_1, false); // Left Arm Motor
-motor ArmRight = motor(PORT7, ratio6_1, false); // Right Arm Motor
-digital_out wingPistonA(Brain.ThreeWirePort.A); // Wing
-digital_out wingPistonB(Brain.ThreeWirePort.B); // Wing
+motor SpinnySpin = motor(PORT4, ratio6_1, false); // Flywheel Motor
+motor ArmLeft = motor(PORT20, ratio6_1, false); // Left Arm Motor
+motor ArmRight = motor(PORT19, ratio6_1, false); // Right Arm 
+digital_out wingPistonA(Brain.ThreeWirePort.B); // Wing
+digital_out wingPistonB(Brain.ThreeWirePort.C); // Wing
 
 
 // Variables
 int meth = 1; // Determines which saying to print
 int lsd = 500; // Timer using variable
+int arm = 0;
 bool spin = false;
 bool deployed = false;
+bool wingeth = true;
 
 const char* sayings[] = {"Stop ordering Marinara, I beg of you...", "Commiting various warcrimes...", "That's right, it goes in the square hole!",
                         "Loading chicken noises mucka blucka...", "Ok, hear me out officer...", "Jesus Screw Part 2: Electric Boogaloo",
@@ -58,12 +62,25 @@ void SpinFlywheel() {
 }
 
 void WingsETC() {
-  if (Controller1.ButtonA.pressing()) {
+  if(wingeth == false) {
     wingPistonA.set(0);
     wingPistonB.set(0);
-  } else {
+  } else if (wingeth == true) {
     wingPistonA.set(1);
     wingPistonB.set(1);
+  }
+}
+
+void ArmyWorky() {
+  if(arm == 0) {
+    ArmLeft.stop();
+    ArmRight.stop();
+  } else if (arm == 1) {
+    ArmLeft.spin(forward);
+    ArmRight.spin(forward);
+  } else if (arm == 2) {
+    ArmLeft.spin(reverse);
+    ArmRight.spin(reverse);
   }
 }
 
@@ -73,6 +90,8 @@ void Stop() {
   TopLeft.stop();
   BottomRight.stop();
   BottomLeft.stop();
+  ExtraRight.stop();
+  ExtraLeft.stop();
 }
 
 void Right() {
@@ -80,6 +99,8 @@ void Right() {
   TopLeft.spin(forward);
   BottomRight.spin(reverse);
   BottomLeft.spin(forward);
+  ExtraRight.spin(reverse);
+  ExtraLeft.spin(forward);
 }
 
 void Left() {
@@ -87,6 +108,8 @@ void Left() {
   TopLeft.spin(reverse);
   BottomRight.spin(forward);
   BottomLeft.spin(reverse);
+  ExtraRight.spin(forward);
+  ExtraLeft.spin(reverse);
 }
 
 void Forward() {
@@ -94,6 +117,8 @@ void Forward() {
   TopLeft.spin(forward);
   BottomRight.spin(forward);
   BottomLeft.spin(forward);
+  ExtraRight.spin(forward);
+  ExtraLeft.spin(forward);
 }
 
 void Reverse() {
@@ -101,6 +126,8 @@ void Reverse() {
   TopLeft.spin(reverse);
   BottomRight.spin(reverse);
   BottomLeft.spin(reverse);
+  ExtraRight.spin(reverse);
+  ExtraLeft.spin(reverse);
 }
 
 // Other Commands
@@ -164,12 +191,12 @@ void pre_auton(void) {
   TopRight.setBrake(brake);
   BottomLeft.setBrake(brake);
   BottomRight.setBrake(brake);
+  ExtraLeft.setBrake(brake);
+  ExtraRight.setBrake(brake);
 
-  TopLeft.setVelocity(100, percent);
-  TopRight.setVelocity(100, percent);
-  BottomLeft.setVelocity(100, percent);
-  BottomRight.setVelocity(100, percent);
   SpinnySpin.setVelocity(100, percent);
+  ArmLeft.setVelocity(100, percent);
+  ArmRight.setVelocity(100, percent);
 
   wingPistonA.set(1);
   wingPistonB.set(1);
@@ -191,6 +218,8 @@ void usercontrol(void) {
     // Call Driving Functions
     TopLeft.spin(forward, Controller1.Axis3.position(), percent);
     BottomLeft.spin(forward, Controller1.Axis3.position(), percent);
+    ExtraLeft.spin(forward, Controller1.Axis3.position(), percent);
+    ExtraRight.spin(forward, Controller1.Axis2.position(), percent);
     TopRight.spin(forward, Controller1.Axis2.position(), percent);
     BottomRight.spin(forward, Controller1.Axis2.position(), percent);
 
@@ -201,18 +230,24 @@ void usercontrol(void) {
     }
 
     if(Controller1.ButtonR1.pressing()) {
-      ArmLeft.spin(forward);
-      ArmRight.spin(forward);
-    } else if (Controller1.ButtonR2. pressing()) {
-      ArmLeft.spin(reverse);
-      ArmRight.spin(reverse);
+      arm = 1;
+    } else if(Controller1.ButtonR2.pressing()) {
+      arm = 2;
+    } else if(Controller1.ButtonB.pressing()) {
+      arm = 0;
+    }
+
+    if(Controller1.ButtonA.pressing()) {
+      wingeth = true;
+    } else if(Controller1.ButtonX.pressing()) {
+      wingeth = false;
     }
 
     WingsETC();
     SpinFlywheel();
+    ArmyWorky();
 
     thread(LoadingScreenTips).detach();
-
     wait(20, msec);
   }
 }
